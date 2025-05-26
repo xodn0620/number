@@ -765,7 +765,10 @@
                        placeholder="최대인원 입력" 
                        min="1"
                        pattern="[0-9]*"
-                       inputmode="numeric">
+                       inputmode="numeric"
+                       step="1"
+                       autocomplete="off"
+                       onfocus="this.select()">
                 <div class="number-controls">
                     <button class="number-control-btn" onclick="adjustNumber(1)">▲</button>
                     <button class="number-control-btn" onclick="adjustNumber(-1)">▼</button>
@@ -1058,7 +1061,17 @@
             
             // 입력 필드 설정
             const input = document.getElementById('maxNumber');
+            
+            // 입력 필드 포커스 시 전체 선택
+            input.addEventListener('focus', function() {
+                this.select();
+            });
+            
+            // 입력값 변경 시 처리
             input.addEventListener('input', function(e) {
+                // 숫자가 아닌 문자 제거
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
                 const value = parseInt(this.value) || 0;
                 if (value < 1) {
                     this.value = '';
@@ -1068,7 +1081,6 @@
             
             // iOS에서 숫자 키패드 강제
             input.addEventListener('touchstart', function(e) {
-                e.preventDefault();
                 this.pattern = '[0-9]*';
                 this.inputMode = 'numeric';
             });
