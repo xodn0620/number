@@ -35,40 +35,38 @@
         }
 
         .info-container {
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
             display: flex;
             justify-content: center;
-            padding: 0 0.8rem;
-            max-width: 600px;
+            padding: 0 1rem;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            overflow: visible;
         }
 
         .info-box {
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            padding: 0.8rem;
+            border-radius: 15px;
+            padding: 1rem;
             margin: 0;
-            width: 240px;
+            width: 320px;
             backdrop-filter: blur(10px);
             text-align: left;
             color: white;
             font-size: 0.9rem;
-            line-height: 1.3;
+            line-height: 1.5;
             display: flex;
-            gap: 0.8rem;
+            gap: 1.5rem;
             position: relative;
         }
 
         .info-basic {
             display: none;
             flex-direction: column;
-            gap: 0.4rem;
-            min-width: 100px;
+            gap: 0.5rem;
+            min-width: 140px;
             justify-content: center;
-            padding-right: 0.4rem;
-            font-size: 1.1rem;
+            padding-right: 0.5rem;
         }
 
         .info-basic.active {
@@ -97,21 +95,6 @@
 
         .info-box .value {
             padding-left: 0.5rem;
-        }
-
-        .info-basic .label {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.1rem;
-            font-weight: 500;
-            line-height: 1.2;
-        }
-
-        .info-basic .value {
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding-left: 0.4rem;
-            line-height: 1.2;
         }
 
         .prize-section {
@@ -614,30 +597,11 @@
             .prize-info-item {
                 font-size: 0.85rem;
             }
-
-            .info-basic {
-                font-size: 1rem;
-            }
-
-            .info-basic .label {
-                font-size: 1rem;
-            }
-
-            .info-basic .value {
-                font-size: 1.1rem;
-            }
-
-            .info-box {
-                width: 220px;
-                padding: 0.8rem;
-                transform: scale(0.95);
-                margin: 0 auto;
-            }
         }
 
         @media (max-width: 480px) {
             .info-container {
-                transform: scale(0.7);
+                transform: scale(0.8);
                 margin: -1rem auto -0.5rem;
             }
 
@@ -652,25 +616,6 @@
             .popup-title {
                 font-size: 1.1rem;
                 margin-bottom: 1rem;
-            }
-
-            .info-box {
-                width: 200px;
-                padding: 0.7rem;
-                transform: scale(0.9);
-                margin: 0 auto;
-            }
-
-            .info-basic {
-                font-size: 0.9rem;
-            }
-
-            .info-basic .label {
-                font-size: 0.9rem;
-            }
-
-            .info-basic .value {
-                font-size: 1rem;
             }
         }
 
