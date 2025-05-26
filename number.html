@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>편대클럽 자리뽑기</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .container {
+            padding: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+
+        .header {
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 1.8rem;
+        }
+
+        .info-container {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            padding: 0 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 0;
+            width: 320px;
+            backdrop-filter: blur(10px);
+            text-align: left;
+            color: white;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: flex;
+            gap: 1.5rem;
+            position: relative;
+        }
+
+        .info-basic {
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 140px;
+            justify-content: center;
+            padding-right: 0.5rem;
+        }
+
+        .info-basic.active {
+            display: flex;
+        }
+
+        .info-box::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 1rem;
+            bottom: 1rem;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%);
+            display: none;
+        }
+
+        .info-box.has-content::after {
+            display: block;
+        }
+
+        .info-box .label {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .info-box .value {
+            padding-left: 0.5rem;
+        }
+
+        .prize-section {
+            flex: 1;
+            display: none;
+            min-width: 160px;
+            padding-left: 0.5rem;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .prize-title {
+            text-align: center;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .info-button {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .info-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(67, 67, 67, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            z-index: 1000;
+            max-width: 90%;
+            width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .popup.active {
+            display: block;
+        }
+
+        .popup-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .popup-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%);
+        }
+
+        .popup-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .popup-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            backdrop-filter: blur(5px);
+        }
+
+        .popup-overlay.active {
+            display: block;
+        }
+
+        .prize-info-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            align-items: start;
+            padding: 0.5rem;
+        }
+
+        .prize-info-group {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-radius: 15px;
+            padding: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .prize-info-group:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .prize-info-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .prize-info-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .prize-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .prize-info-item .people {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .prize-info-item .prizes {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .prize-content {
+            padding-top: 0.5rem;
+            padding-left: 0.8rem;
+            padding-right: 0.3rem;
+        }
+
+        .prize-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.2rem;
+            font-size: 0.9rem;
+            gap: 0.5rem;
+        }
+
+        .prize-item .label {
+            color: rgba(255, 255, 255, 0.9);
+            min-width: 28px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .prize-item .value {
+            flex: 1;
+            text-align: left;
+        }
+
+        .input-group {
+            margin: 0 auto;
+            max-width: 300px;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 8px;
+        }
+
+        input[type="number"] {
+            width: 180px;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            -moz-appearance: textfield;
+            margin: 0;
+        }
+
+        /* 숫자 입력 화살표 숨기기 */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox에서 화살표 숨기기 */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        /* 커스텀 숫자 조절 버튼 */
+        .number-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            height: 46px;
+            justify-content: center;
+        }
+
+        .number-control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 28px;
+            height: 22px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            padding: 0;
+            transition: background-color 0.2s;
+        }
+
+        .number-control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 플레이스홀더 스타일 */
+        input[type="number"]::placeholder {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0 auto 1.5rem;
+            max-width: 300px;
+            padding: 0 1rem;
+        }
+
+        .start-button, .reset-button {
+            padding: 0.7rem 1.2rem;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .start-button {
+            background-color: #4CAF50;
+            transition: all 0.3s;
+        }
+
+        .start-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .start-button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+
+        .reset-button {
+            background-color: #f44336;
+        }
+
+        .reset-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .result {
+            margin: 1rem auto;
+            font-size: 1.2rem;
+            min-height: 200px;
+            display: none;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .result:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .result.active {
+            display: flex;
+        }
+
+        .number {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.2);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .number.pop {
+            transform: scale(1.2);
+        }
+
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0 1rem;
+        }
+
+        .click-guide {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            padding: 0 1rem;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+
+        .history-container {
+            margin: 1rem auto;
+            max-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1rem;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .history-container.active {
+            display: block;
+        }
+
+        .history-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            color: white;
+            padding: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        /* 스크롤바 스타일링 */
+        .history-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .history-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 모바일 터치 최적화 */
+        @media (max-width: 768px) {
+            .start-button, .reset-button, input, .result {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .number {
+                -webkit-tap-highlight-color: transparent;
+                user-select: none;
+            }
+
+            input {
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            .info-container {
+                transform: scale(0.9);
+                margin: -0.5rem auto 0;
+            }
+            
+            .info-box, .prize-section {
+                font-size: 0.85rem;
+            }
+
+            .prize-item .value {
+                font-size: 0.85rem;
+            }
+
+            .prize-info-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .popup {
+                padding: 1.5rem;
+                width: 95%;
+            }
+
+            .prize-info-group {
+                padding: 1rem;
+            }
+
+            .prize-info-item {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .info-container {
+                transform: scale(0.8);
+                margin: -1rem auto -0.5rem;
+            }
+
+            .prize-info-list {
+                grid-template-columns: 1fr;
+            }
+
+            .popup {
+                padding: 1rem;
+            }
+
+            .popup-title {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* 스크롤바 스타일링 */
+        .popup::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .popup::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .popup::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .popup::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .confirm-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(67, 67, 67, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            z-index: 1100;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .confirm-popup.active {
+            display: block;
+        }
+
+        .confirm-message {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .confirm-button {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            min-width: 80px;
+        }
+
+        .confirm-yes {
+            background-color: #4CAF50;
+        }
+
+        .confirm-no {
+            background-color: #f44336;
+        }
+
+        .confirm-yes:hover {
+            background-color: #45a049;
+        }
+
+        .confirm-no:hover {
+            background-color: #d32f2f;
+        }
+
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1099;
+            backdrop-filter: blur(3px);
+        }
+
+        .confirm-overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>편대클럽 자리뽑기</h1>
+        </div>
+        <div class="info-container">
+            <div class="info-box">
+                <div class="info-basic">
+                    <div>
+                        <span class="label">자리이동:</span>
+                        <span class="value" id="moveInfo"></span>
+                    </div>
+                    <div>
+                        <span class="label">적립금:</span>
+                        <span class="value" id="pointInfo"></span>
+                    </div>
+                </div>
+                <div class="prize-section" id="prizeInfo">
+                    <div class="prize-title">
+                        상금배분
+                        <button class="info-button" onclick="showPrizeInfo()">?</button>
+                    </div>
+                    <div class="prize-content">
+                        <div class="prize-item">
+                            <span class="label">1등:</span>
+                            <span class="value"></span>
+                        </div>
+                        <div class="prize-item">
+                            <span class="label">2등:</span>
+                            <span class="value"></span>
+                        </div>
+                        <div class="prize-item">
+                            <span class="label">3등:</span>
+                            <span class="value"></span>
+                        </div>
+                        <div class="prize-item">
+                            <span class="label">4등:</span>
+                            <span class="value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input type="number" 
+                       id="maxNumber" 
+                       placeholder="최대인원 입력" 
+                       min="1"
+                       pattern="[0-9]*"
+                       inputmode="numeric">
+                <div class="number-controls">
+                    <button class="number-control-btn" onclick="adjustNumber(1)">▲</button>
+                    <button class="number-control-btn" onclick="adjustNumber(-1)">▼</button>
+                </div>
+            </div>
+        </div>
+        <div class="button-group">
+            <button class="start-button" onclick="startGenerator()">시작</button>
+            <button class="reset-button" onclick="showConfirmPopup()">초기화</button>
+        </div>
+        <div id="error" class="error"></div>
+        <div class="result" id="result" onclick="showNextNumber()">
+            <div id="numberDisplay"></div>
+            <div class="click-guide">최대인원을 입력해주시고\n시작버튼을 눌러주세요.</div>
+        </div>
+        <div class="history-container" id="historyContainer">
+            <div class="history-title">결과 이력</div>
+            <div class="history-list" id="historyList"></div>
+        </div>
+        <div class="popup-overlay" id="prizePopupOverlay" onclick="hidePrizeInfo()"></div>
+        <div class="popup" id="prizePopup">
+            <button class="popup-close" onclick="hidePrizeInfo()">×</button>
+            <div class="popup-title">상금배분 상세정보</div>
+            <div class="popup-content">
+                <div class="prize-info-list" id="prizeInfoList"></div>
+            </div>
+        </div>
+        <div class="confirm-overlay" id="confirmOverlay"></div>
+        <div class="confirm-popup" id="confirmPopup">
+            <div class="confirm-message">초기화 하시겠습니까?</div>
+            <div class="confirm-buttons">
+                <button class="confirm-button confirm-yes" onclick="confirmReset()">예</button>
+                <button class="confirm-button confirm-no" onclick="hideConfirmPopup()">아니오</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let shuffledNumbers = [];
+        let currentIndex = 0;
+        let history = [];
+
+        // 터치 이벤트 처리 함수 추가
+        function handleTouchStart(event) {
+            event.preventDefault();
+            const element = event.currentTarget;
+            element.click();
+        }
+
+        // 모바일 이벤트 리스너 설정
+        function setupMobileEvents() {
+            const resultDiv = document.getElementById('result');
+            const buttons = document.querySelectorAll('button');
+            
+            // 결과 영역 터치 이벤트
+            resultDiv.addEventListener('touchstart', handleTouchStart, false);
+            
+            // 모든 버튼에 터치 이벤트 추가
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', handleTouchStart, false);
+            });
+        }
+
+        function resetGenerator() {
+            const errorDiv = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+            const numberDisplay = document.getElementById('numberDisplay');
+            const inputField = document.getElementById('maxNumber');
+            const historyContainer = document.getElementById('historyContainer');
+            const historyList = document.getElementById('historyList');
+            const moveInfoValue = document.getElementById('moveInfo');
+            const pointInfoValue = document.getElementById('pointInfo');
+            const prizeSection = document.getElementById('prizeInfo');
+            const prizeItems = document.querySelectorAll('#prizeInfo .prize-item');
+            const infoBasic = document.querySelector('.info-basic');
+            const infoBox = document.querySelector('.info-box');
+            const startButton = document.querySelector('.start-button');
+            
+            // 시작 버튼 활성화
+            startButton.disabled = false;
+            
+            shuffledNumbers = [];
+            currentIndex = 0;
+            history = [];
+            errorDiv.textContent = '';
+            resultDiv.classList.remove('active');
+            numberDisplay.innerHTML = '';
+            inputField.value = '';
+            historyContainer.classList.remove('active');
+            historyList.innerHTML = '';
+            moveInfoValue.textContent = '';
+            pointInfoValue.textContent = '';
+            infoBasic.classList.remove('active');
+            prizeSection.style.display = 'none';
+            infoBox.classList.remove('has-content');
+            prizeItems.forEach(item => {
+                item.style.display = 'none';
+                item.querySelector('.value').textContent = '';
+            });
+            document.querySelector('.click-guide').textContent = '최대인원을 입력해주시고\n시작버튼을 눌러주세요.';
+        }
+
+        function startGenerator() {
+            const maxNumber = parseInt(document.getElementById('maxNumber').value);
+            const errorDiv = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+            const numberDisplay = document.getElementById('numberDisplay');
+            const clickGuide = document.querySelector('.click-guide');
+            const historyContainer = document.getElementById('historyContainer');
+            const historyList = document.getElementById('historyList');
+            const prizeSection = document.getElementById('prizeInfo');
+            const startButton = document.querySelector('.start-button');
+            
+            if (!maxNumber || maxNumber < 1) {
+                errorDiv.textContent = '최대인원을 입력해주세요';
+                resultDiv.classList.remove('active');
+                historyContainer.classList.remove('active');
+                prizeSection.style.display = 'none';
+                clickGuide.textContent = '최대인원을 입력해주시고\n시작버튼을 눌러주세요.';
+                return;
+            }
+
+            // 시작 버튼 비활성화
+            startButton.disabled = true;
+
+            shuffledNumbers = Array.from({length: maxNumber}, (_, i) => i + 1);
+            for (let i = shuffledNumbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledNumbers[i], shuffledNumbers[j]] = [shuffledNumbers[j], shuffledNumbers[i]];
+            }
+            
+            currentIndex = 0;
+            history = [];
+            errorDiv.textContent = '';
+            resultDiv.classList.add('active');
+            historyContainer.classList.add('active');
+            prizeSection.style.display = 'block';
+            numberDisplay.innerHTML = '';
+            historyList.innerHTML = '';
+            clickGuide.textContent = '터치하여 다음 번호 보기';
+        }
+
+        function showNextNumber() {
+            const maxNumber = parseInt(document.getElementById('maxNumber').value);
+            if (!maxNumber || maxNumber < 1) {
+                document.querySelector('.click-guide').textContent = '최대인원을 입력해주시고\n시작버튼을 눌러주세요.';
+                return;
+            }
+
+            if (currentIndex >= shuffledNumbers.length) {
+                document.getElementById('numberDisplay').innerHTML = '완료!';
+                document.querySelector('.click-guide').textContent = '다시 시작하려면 초기화 버튼을 터치하세요';
+                return;
+            }
+
+            const numberDisplay = document.getElementById('numberDisplay');
+            const number = shuffledNumbers[currentIndex];
+            numberDisplay.innerHTML = `<div class="number">${number}</div>`;
+            
+            // 이력 추가
+            history.push(number);
+            updateHistory();
+
+            const numberElement = numberDisplay.querySelector('.number');
+            numberElement.classList.add('pop');
+            setTimeout(() => numberElement.classList.remove('pop'), 300);
+
+            currentIndex++;
+        }
+
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = history.map((num, index) => 
+                `<div class="history-item">
+                    <span>${index + 1} 번째</span>
+                    <span>${num} 번</span>
+                </div>`
+            ).join('');
+            
+            // 자동 스크롤
+            historyList.scrollTop = historyList.scrollHeight;
+        }
+
+        function getPrizeAmount(people) {
+            if (people >= 31) {
+                // 31명 이상일 경우 6:3:2:1 비율로 계산
+                // 1인당 5000원으로 계산
+                const totalPrize = people * 5000;
+                const firstPrize = Math.floor(totalPrize * 0.5);  // 50% (6/12)
+                const secondPrize = Math.floor(totalPrize * 0.25); // 25% (3/12)
+                const thirdPrize = Math.floor(totalPrize * 0.17);  // 17% (2/12)
+                const fourthPrize = Math.floor(totalPrize * 0.08); // 8% (1/12)
+                
+                return [firstPrize, secondPrize, thirdPrize, fourthPrize];
+            }
+
+            const prizes = {
+                1: [10000],
+                2: [20000],
+                3: [30000],
+                4: [30000, 10000],
+                5: [40000, 10000],
+                6: [40000, 20000],
+                7: [50000, 20000],
+                8: [50000, 20000, 10000],
+                9: [60000, 20000, 10000],
+                10: [60000, 30000, 10000],
+                11: [60000, 30000, 10000],
+                12: [70000, 30000, 10000],
+                13: [70000, 30000, 20000],
+                14: [80000, 30000, 20000],
+                15: [80000, 40000, 20000],
+                16: [80000, 40000, 30000],
+                17: [90000, 40000, 30000],
+                18: [90000, 50000, 30000],
+                19: [100000, 50000, 30000],
+                20: [100000, 60000, 30000],
+                21: [110000, 50000, 30000, 10000],
+                22: [110000, 50000, 30000, 20000],
+                23: [120000, 60000, 30000, 10000],
+                24: [120000, 60000, 30000, 20000],
+                25: [120000, 60000, 40000, 20000],
+                26: [130000, 60000, 40000, 20000],
+                27: [140000, 60000, 40000, 20000],
+                28: [140000, 60000, 40000, 30000],
+                29: [140000, 70000, 50000, 20000],
+                30: [140000, 70000, 50000, 30000]
+            };
+            return prizes[people] || [];
+        }
+
+        function formatPrize(amount) {
+            return amount.toLocaleString() + '원';
+        }
+
+        function updateMoveInfo() {
+            const maxNumber = parseInt(document.getElementById('maxNumber').value) || 0;
+            const moveInfoValue = document.getElementById('moveInfo');
+            const pointInfoValue = document.getElementById('pointInfo');
+            const prizeSection = document.getElementById('prizeInfo');
+            const prizeItems = document.querySelectorAll('#prizeInfo .prize-item');
+            const infoBasic = document.querySelector('.info-basic');
+            const infoBox = document.querySelector('.info-box');
+            
+            if (maxNumber > 0) {
+                const moveCount = Math.round(maxNumber / 3);
+                moveInfoValue.textContent = moveCount + ' 자리';
+                
+                // 적립금 표시 업데이트
+                if (maxNumber > 10) {
+                    pointInfoValue.textContent = '10,000원';
+                } else {
+                    pointInfoValue.textContent = '0원';
+                }
+
+                // 상금 배분 업데이트
+                const prizes = getPrizeAmount(maxNumber);
+                infoBasic.classList.add('active');
+                prizeSection.style.display = 'block';
+                infoBox.classList.add('has-content');
+                prizeItems.forEach((item, index) => {
+                    if (index < prizes.length) {
+                        item.style.display = 'flex';
+                        item.querySelector('.value').textContent = formatPrize(prizes[index]);
+                    } else {
+                        item.style.display = 'none';
+                        item.querySelector('.value').textContent = '';
+                    }
+                });
+            } else {
+                moveInfoValue.textContent = '';
+                pointInfoValue.textContent = '';
+                infoBasic.classList.remove('active');
+                prizeSection.style.display = 'none';
+                infoBox.classList.remove('has-content');
+                // 상금 배분 초기화
+                prizeItems.forEach(item => {
+                    item.style.display = 'none';
+                    item.querySelector('.value').textContent = '';
+                });
+            }
+        }
+
+        // 입력 필드 이벤트 리스너 수정
+        window.onload = function() {
+            document.querySelector('.click-guide').textContent = '최대인원을 입력해주시고\n시작버튼을 눌러주세요.';
+            
+            // 모바일 이벤트 설정
+            setupMobileEvents();
+            
+            // 입력 필드 설정
+            const input = document.getElementById('maxNumber');
+            input.addEventListener('input', function(e) {
+                const value = parseInt(this.value) || 0;
+                if (value < 1) {
+                    this.value = '';
+                }
+                updateMoveInfo();
+            });
+            
+            // iOS에서 숫자 키패드 강제
+            input.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                this.pattern = '[0-9]*';
+                this.inputMode = 'numeric';
+            });
+
+            // 초기 상태 설정
+            const infoBasic = document.querySelector('.info-basic');
+            const infoBox = document.querySelector('.info-box');
+            infoBasic.classList.remove('active');
+            infoBox.classList.remove('has-content');
+        }
+
+        // adjustNumber 함수 수정
+        function adjustNumber(delta) {
+            const input = document.getElementById('maxNumber');
+            const currentValue = parseInt(input.value) || 0;
+            const newValue = Math.max(1, currentValue + delta);
+            input.value = newValue;
+            updateMoveInfo();
+        }
+
+        // 엔터 키 이벤트
+        document.getElementById('maxNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                startGenerator();
+            }
+        });
+
+        function showPrizeInfo() {
+            const popup = document.getElementById('prizePopup');
+            const overlay = document.getElementById('prizePopupOverlay');
+            const prizeInfoList = document.getElementById('prizeInfoList');
+            
+            // 상금 정보 데이터
+            const prizeInfo = [
+                { people: 1, prizes: "1" },
+                { people: 2, prizes: "2" },
+                { people: 3, prizes: "3" },
+                { people: 4, prizes: "3 / 1" },
+                { people: 5, prizes: "4 / 1" },
+                { people: 6, prizes: "4 / 2" },
+                { people: 7, prizes: "5 / 2" },
+                { people: 8, prizes: "5 / 2 / 1" },
+                { people: 9, prizes: "6 / 2 / 1" },
+                { people: 10, prizes: "6 / 3 / 1" },
+                { people: 11, prizes: "6 / 3 / 1" },
+                { people: 12, prizes: "7 / 3 / 1" },
+                { people: 13, prizes: "7 / 3 / 2" },
+                { people: 14, prizes: "8 / 3 / 2" },
+                { people: 15, prizes: "8 / 4 / 2" },
+                { people: 16, prizes: "8 / 4 / 3" },
+                { people: 17, prizes: "9 / 4 / 3" },
+                { people: 18, prizes: "9 / 5 / 3" },
+                { people: 19, prizes: "10 / 5 / 3" },
+                { people: 20, prizes: "10 / 6 / 3" },
+                { people: 21, prizes: "11 / 5 / 3 / 1" },
+                { people: 22, prizes: "11 / 5 / 3 / 2" },
+                { people: 23, prizes: "12 / 6 / 3 / 1" },
+                { people: 24, prizes: "12 / 6 / 3 / 2" },
+                { people: 25, prizes: "12 / 6 / 4 / 2" },
+                { people: 26, prizes: "13 / 6 / 4 / 2" },
+                { people: 27, prizes: "14 / 6 / 4 / 2" },
+                { people: 28, prizes: "14 / 6 / 4 / 3" },
+                { people: 29, prizes: "14 / 7 / 5 / 2" },
+                { people: 30, prizes: "14 / 7 / 5 / 3" }
+            ];
+
+            // 리스트 생성
+            const groupedPrizeInfo = [];
+            for (let i = 0; i < prizeInfo.length; i += 10) {
+                groupedPrizeInfo.push(prizeInfo.slice(i, i + 10));
+            }
+
+            prizeInfoList.innerHTML = groupedPrizeInfo.map((group) => `
+                <div class="prize-info-group">
+                    ${group.map(info => `
+                        <div class="prize-info-item">
+                            <span class="people">${info.people}명:</span>
+                            <span class="prizes">${info.prizes}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+
+            popup.classList.add('active');
+            overlay.classList.add('active');
+        }
+
+        function hidePrizeInfo() {
+            const popup = document.getElementById('prizePopup');
+            const overlay = document.getElementById('prizePopupOverlay');
+            popup.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        function showConfirmPopup() {
+            document.getElementById('confirmOverlay').classList.add('active');
+            document.getElementById('confirmPopup').classList.add('active');
+        }
+
+        function hideConfirmPopup() {
+            document.getElementById('confirmOverlay').classList.remove('active');
+            document.getElementById('confirmPopup').classList.remove('active');
+        }
+
+        function confirmReset() {
+            hideConfirmPopup();
+            resetGenerator();
+        }
+
+        // 기존 onclick 이벤트를 showConfirmPopup으로 변경
+        document.querySelector('.reset-button').onclick = showConfirmPopup;
+    </script>
+</body>
+</html> 
