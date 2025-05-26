@@ -35,38 +35,40 @@
         }
 
         .info-container {
-            margin-bottom: 1rem;
+            margin-bottom: 3rem;
             display: flex;
             justify-content: center;
             padding: 0 1rem;
-            max-width: 800px;
+            max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
+            overflow: visible;
         }
 
         .info-box {
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            padding: 1rem;
+            border-radius: 25px;
+            padding: 3rem;
             margin: 0;
-            width: 320px;
+            width: 800px;
             backdrop-filter: blur(10px);
             text-align: left;
             color: white;
             font-size: 0.9rem;
-            line-height: 1.5;
+            line-height: 2;
             display: flex;
-            gap: 1.5rem;
+            gap: 3rem;
             position: relative;
         }
 
         .info-basic {
             display: none;
             flex-direction: column;
-            gap: 0.5rem;
-            min-width: 140px;
+            gap: 2rem;
+            min-width: 400px;
             justify-content: center;
-            padding-right: 0.5rem;
+            padding-right: 2rem;
+            font-size: 17.6rem;
         }
 
         .info-basic.active {
@@ -95,6 +97,21 @@
 
         .info-box .value {
             padding-left: 0.5rem;
+        }
+
+        .info-basic .label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 17.6rem;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .info-basic .value {
+            color: white;
+            font-size: 19.2rem;
+            font-weight: bold;
+            padding-left: 2rem;
+            line-height: 1;
         }
 
         .prize-section {
@@ -597,11 +614,30 @@
             .prize-info-item {
                 font-size: 0.85rem;
             }
+
+            .info-basic {
+                font-size: 16rem;
+            }
+
+            .info-basic .label {
+                font-size: 16rem;
+            }
+
+            .info-basic .value {
+                font-size: 17.6rem;
+            }
+
+            .info-box {
+                width: 700px;
+                padding: 2.5rem;
+                transform: scale(0.5);
+                margin: -8rem auto;
+            }
         }
 
         @media (max-width: 480px) {
             .info-container {
-                transform: scale(0.8);
+                transform: scale(0.7);
                 margin: -1rem auto -0.5rem;
             }
 
@@ -616,6 +652,25 @@
             .popup-title {
                 font-size: 1.1rem;
                 margin-bottom: 1rem;
+            }
+
+            .info-box {
+                width: 600px;
+                padding: 2rem;
+                transform: scale(0.4);
+                margin: -10rem auto;
+            }
+
+            .info-basic {
+                font-size: 14.4rem;
+            }
+
+            .info-basic .label {
+                font-size: 14.4rem;
+            }
+
+            .info-basic .value {
+                font-size: 16rem;
             }
         }
 
